@@ -42,13 +42,15 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # Принудительная очистка старого кэша версий Python
           rm -rf .buildozer
-          
           export ANDROID_SDK_ROOT=$ANDROID_HOME
           yes | buildozer -v android debug
         env:
           BUILDOZER_WARN_ON_ROOT: 1
+          # Принудительно отключаем жесткую сверку версий Python хоста и таргета
+          P4A_no_hostpython_check: 1
+          # Явно заставляем p4a использовать установленный в системе питон
+          P4A_hostpython: /opt/hostedtoolcache/Python/3.11.9/x64/bin/python
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
