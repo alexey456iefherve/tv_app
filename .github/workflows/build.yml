@@ -10,21 +10,23 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      # Обновлено с @v4 до @v4.2.2 (поддержка Node 24)
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
+      # Обновлено с @v5 до @v5.4.0
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5.4.0
         with:
           python-version: '3.11.9'
 
+      # Обновлено с @v4 до @v5.5.0
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5.5.0
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Устанавливаем системные утилиты сборки и базовый пакет лицензий Android
       - name: Install System Dependencies
         run: |
           sudo apt-get update
@@ -40,11 +42,8 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # Полностью очищаем все папки перед чистым запуском
           rm -rf .buildozer
           rm -rf ~/.buildozer
-          
-          # Запускаем сборку, Buildozer сам скачает SDK/NDK в нужные ему места
           yes | buildozer -v android debug
         env:
           BUILDOZER_WARN_ON_ROOT: 1
