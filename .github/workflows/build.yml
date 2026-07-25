@@ -21,7 +21,6 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          # Убрали проблемные пакеты gstreamer, которые ломали сборку
           sudo apt-get install -y --fix-missing \
             git zip unzip openjdk-17-jdk-headless autoconf libtool pkg-config \
             zlib1g-dev libncurses5-dev libsqlite3-dev libgdbm-dev libssl-dev \
@@ -31,6 +30,15 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install Cython==0.29.33 virtualenv buildozer
+
+      # Сохраняем и восстанавливаем скачанные Android SDK, NDK и скомпилированные рецепты
+      - name: Cache Buildozer data
+        uses: actions/cache@v4
+        with:
+          path: .buildozer
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
 
       - name: Build Android APK
         run: |
