@@ -18,11 +18,22 @@ jobs:
         with:
           python-version: '3.10'
 
+      # Установка Java 17, которая строго необходима для работы Android SDK
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Официальный экшен для правильной установки Android SDK и принятия лицензий
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y --fix-missing \
-            git zip unzip openjdk-17-jdk-headless autoconf libtool pkg-config \
+            git zip unzip autoconf libtool pkg-config \
             zlib1g-dev libncurses5-dev libsqlite3-dev libgdbm-dev libssl-dev \
             libbz2-dev libffi-dev liblzma-dev libasound2-dev shared-mime-info
 
@@ -31,17 +42,10 @@ jobs:
           pip install --upgrade pip
           pip install Cython==0.29.33 virtualenv buildozer
 
-      # Предварительно создаем папки и принимаем лицензии Google
-      - name: Pre-accept Android Licenses
-        run: |
-          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
-          echo -e "\n244313f851b6973714464533dfe386091ae672c9" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-          echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
-          echo -e "\nde56728758b04cccc85b81c78b547f8848ef2212" > ~/.buildozer/android/platform/android-sdk/licenses/android-googletv-license
-
       - name: Build Android APK
         run: |
-          # Передаем "yes" во все внутренние процессы
+          # Сообщаем Buildozer, где именно в системе лежит готовый Android SDK
+          export ANDROID_SDK_ROOT=$ANDROID_HOME
           yes | buildozer -v android debug
         env:
           BUILDOZER_WARN_ON_ROOT: 1
