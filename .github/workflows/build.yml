@@ -20,13 +20,12 @@ jobs:
 
       - name: Install System Dependencies
         run: |
-          # Убрали проблемный sed, оставляем только чистое обновление и установку
           sudo apt-get update
+          # Убрали проблемные пакеты gstreamer, которые ломали сборку
           sudo apt-get install -y --fix-missing \
             git zip unzip openjdk-17-jdk-headless autoconf libtool pkg-config \
             zlib1g-dev libncurses5-dev libsqlite3-dev libgdbm-dev libssl-dev \
-            libbz2-dev libffi-dev liblzma-dev libasound2-dev libgstreamer1.0-dev \
-            gstreamer1.0-plugins-base gstreamer1.0-plugins-good shared-mime-info
+            libbz2-dev libffi-dev liblzma-dev libasound2-dev shared-mime-info
 
       - name: Install Python Dependencies
         run: |
