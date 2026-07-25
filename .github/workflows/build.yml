@@ -20,11 +20,8 @@ jobs:
 
       - name: Install System Dependencies
         run: |
-          # Принудительно чиним и обновляем зеркала репозиториев Ubuntu
           sudo sed -i 's/://ubuntu.com' /etc/apt/sources.list
           sudo apt-get update --fix-missing
-          
-          # Установка с игнорированием потерянных пакетов
           sudo apt-get install -y --fix-missing \
             git zip unzip openjdk-17-jdk-headless autoconf libtool pkg-config \
             zlib1g-dev libncurses5-dev libsqlite3-dev libgdbm-dev libssl-dev \
@@ -38,7 +35,8 @@ jobs:
 
       - name: Build Android APK
         run: |
-          buildozer android debug
+          # Автоматически принимаем все лицензии Android SDK
+          yes | buildozer android debug
         env:
           BUILDOZER_WARN_ON_ROOT: 1
 
