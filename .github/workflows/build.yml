@@ -24,9 +24,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
+      # Устанавливаем системные утилиты сборки и базовый пакет лицензий Android
       - name: Install System Dependencies
         run: |
           sudo apt-get update
@@ -42,19 +40,11 @@ jobs:
 
       - name: Build Android APK
         run: |
+          # Полностью очищаем все папки перед чистым запуском
           rm -rf .buildozer
+          rm -rf ~/.buildozer
           
-          # 1. Создаем структуру папок, которую ожидает увидеть старый Buildozer
-          mkdir -p ~/.buildozer/android/platform/android-sdk/tools/bin
-          
-          # 2. Перенаправляем его запросы на реальный sdkmanager из нового Android SDK
-          ln -s $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager ~/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
-          
-          # 3. Копируем системные лицензии, чтобы он точно не зависал
-          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
-          cp -r $ANDROID_HOME/licenses/* ~/.buildozer/android/platform/android-sdk/licenses/ || true
-          
-          export ANDROID_SDK_ROOT=$ANDROID_HOME
+          # Запускаем сборку, Buildozer сам скачает SDK/NDK в нужные ему места
           yes | buildozer -v android debug
         env:
           BUILDOZER_WARN_ON_ROOT: 1
