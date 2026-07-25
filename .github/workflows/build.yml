@@ -42,21 +42,19 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # 1. Принудительно очищаем старые папки
           rm -rf .buildozer
           
-          # 2. Создаем системные папки лицензий в домашней директории Buildozer
+          # 1. Создаем структуру папок, которую ожидает увидеть старый Buildozer
+          mkdir -p ~/.buildozer/android/platform/android-sdk/tools/bin
+          
+          # 2. Перенаправляем его запросы на реальный sdkmanager из нового Android SDK
+          ln -s $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager ~/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
+          
+          # 3. Копируем системные лицензии, чтобы он точно не зависал
           mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          cp -r $ANDROID_HOME/licenses/* ~/.buildozer/android/platform/android-sdk/licenses/ || true
           
-          # 3. Записываем хэши официальных лицензий Google, чтобы sdkmanager считал их принятыми
-          echo -e "\n244313f851b6973714464533dfe386091ae672c9" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-          echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
-          echo -e "\nde56728758b04cccc85b81c78b547f8848ef2212" > ~/.buildozer/android/platform/android-sdk/licenses/android-googletv-license
-          
-          # 4. Прокидываем путь к установленному SDK
           export ANDROID_SDK_ROOT=$ANDROID_HOME
-          
-          # 5. Запускаем сборку
           yes | buildozer -v android debug
         env:
           BUILDOZER_WARN_ON_ROOT: 1
