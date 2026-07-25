@@ -20,8 +20,8 @@ jobs:
 
       - name: Install System Dependencies
         run: |
-          sudo sed -i 's/://ubuntu.com' /etc/apt/sources.list
-          sudo apt-get update --fix-missing
+          # Убрали проблемный sed, оставляем только чистое обновление и установку
+          sudo apt-get update
           sudo apt-get install -y --fix-missing \
             git zip unzip openjdk-17-jdk-headless autoconf libtool pkg-config \
             zlib1g-dev libncurses5-dev libsqlite3-dev libgdbm-dev libssl-dev \
@@ -35,7 +35,6 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # Запуск сборки с выводом расширенных логов
           yes | buildozer -v android debug
         env:
           BUILDOZER_WARN_ON_ROOT: 1
