@@ -31,17 +31,17 @@ jobs:
           pip install --upgrade pip
           pip install Cython==0.29.33 virtualenv buildozer
 
-      # Сохраняем и восстанавливаем скачанные Android SDK, NDK и скомпилированные рецепты
-      - name: Cache Buildozer data
-        uses: actions/cache@v4
-        with:
-          path: .buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
-          restore-keys: |
-            ${{ runner.os }}-buildozer-
+      # Предварительно создаем папки и принимаем лицензии Google
+      - name: Pre-accept Android Licenses
+        run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          echo -e "\n244313f851b6973714464533dfe386091ae672c9" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+          echo -e "\nde56728758b04cccc85b81c78b547f8848ef2212" > ~/.buildozer/android/platform/android-sdk/licenses/android-googletv-license
 
       - name: Build Android APK
         run: |
+          # Передаем "yes" во все внутренние процессы
           yes | buildozer -v android debug
         env:
           BUILDOZER_WARN_ON_ROOT: 1
