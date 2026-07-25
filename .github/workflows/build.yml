@@ -15,7 +15,7 @@ jobs:
 
       # Buildozer Action автоматически установит Python, SDK/NDK и соберет APK
       - name: Build APK with Buildozer
-        uses: ArtemGovorov/buildozer-action@v1
+        uses: alexeykobyl/buildozer-action@v1
         id: buildozer
         with:
           workdir: .
