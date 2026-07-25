@@ -5,7 +5,7 @@ package.domain = org.example
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,m3u
 version = 0.1
-requirements = python3,kivy==2.3.0
+requirements = python3==3.11.9,kivy==2.3.0
 
 orientation = landscape
 fullscreen = 1
@@ -17,10 +17,18 @@ android.ndk_api = 21
 android.archs = armeabi-v7a, arm64-v8a
 android.allow_backup = True
 
+# Фиксируем стабильные версии инструментов, чтобы p4a не выдавал ошибок
+android.ndk = 25b
+android.sdk = 33
+
+# ВРУЧНУЮ ДОБАВИЛИ: Фиксация стабильной ветки компилятора
+p4a.branch = v2024.01.21
+
 # Ключевой интент для Android TV
 android.manifest.intent_filters = [ {"name": "android.intent.action.MAIN", "category": ["android.intent.category.LEANBACK_LAUNCHER", "android.intent.category.LAUNCHER"]} ]
 
 [buildozer]
 log_level = 2
 warn_on_root = 1
+
 
